@@ -55,8 +55,11 @@ with left_col:
             st.error("⚠️ Invalid YouTube URL. Please enter a valid one.")
         st.stop()
 
-    # --- Transcript Fetching ---
+    # -------------------- CACHED FUNCTIONS --------------------
+
+    @st.cache_data(show_spinner=True)
     def fetch_transcript(video_id, video_url):
+        """Fetches transcript using YouTubeTranscriptAPI or yt_dlp as fallback."""
         try:
             transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=["en"])
             st.success("✅ Official transcript fetched successfully!")
@@ -131,6 +134,34 @@ with left_col:
                     st.error(f"⚠️ Could not fetch transcript automatically: {e}")
                     st.stop()
 
+    @st.cache_resource(show_spinner=True)
+    def build_vectorstore(full_text, api_key, video_id):
+        """Builds or loads a cached FAISS vectorstore for the given video."""
+        store_path = f"faiss_store_{video_id}"
+
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+        texts = text_splitter.split_text(full_text)
+
+        embeddings = OpenAIEmbeddings(
+            model="text-embedding-3-small",
+            openai_api_base="https://openrouter.ai/api/v1",
+            openai_api_key=api_key
+        )
+
+        if os.path.exists(store_path):
+            st.info("📂 Loading cached FAISS index from disk...")
+            vectorstore = FAISS.load_local(store_path, embeddings, allow_dangerous_deserialization=True)
+        else:
+            st.info("🧠 Building new FAISS vectorstore...")
+            vectorstore = FAISS.from_texts(texts, embeddings)
+            vectorstore.save_local(store_path)
+            st.success("✅ FAISS index saved for future use.")
+
+        retriever = vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 5})
+        return retriever
+
+
+    # -------------------- EXECUTION --------------------
     full_text = fetch_transcript(video_id, video_url)
     if not full_text.strip():
         st.error("Transcript appears empty. Please try another video.")
@@ -150,20 +181,8 @@ with left_col:
 
     # --- Embedding & Vectorization ---
     st.subheader("🔍 Embedding & Vectorization")
-
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-    texts = text_splitter.split_text(full_text)
-
-    embeddings = OpenAIEmbeddings(
-        model="text-embedding-3-small",
-        openai_api_base="https://openrouter.ai/api/v1",
-        openai_api_key=api_key
-    )
-
-    vectorstore = FAISS.from_texts(texts, embeddings)
-    retriever = vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 5})
-
-    st.info("✅ FAISS index built and ready for retrieval.")
+    retriever = build_vectorstore(full_text, api_key, video_id)
+    st.info("✅ FAISS index ready for retrieval.")
 
 
 # -------------------- RIGHT COLUMN: Chat Interface --------------------
