@@ -111,6 +111,8 @@ Then modify `app.py` to read from it if not entered manually.
 
 ## 🖼️ Preview
 
+<img width="1919" height="910" alt="image" src="https://github.com/user-attachments/assets/6be5200a-a915-4b64-ab01-4590c7161356" />
+<img width="1919" height="498" alt="image" src="https://github.com/user-attachments/assets/803f61ba-9fc7-403a-8c9f-79a2c9d9ad30" />
 
 ---
 
