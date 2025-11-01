@@ -14,7 +14,7 @@ faiss-cpu==1.12.0
 tiktoken==0.12.0
 
 # --- Data and ML stack ---
-numpy==2.0.2
+numpy>=2.1.0
 pandas==2.3.3
 scikit-learn==1.6.1
 scipy==1.13.1
@@ -40,5 +40,5 @@ altair==5.5.0
 pydeck==0.9.1
 
 # --- TensorFlow (optional, if used for embeddings or model integration) ---
-tensorflow-gpu==2.10.0
+tensorflow==2.10.0
 tensorflow-io-gcs-filesystem==0.31.0
