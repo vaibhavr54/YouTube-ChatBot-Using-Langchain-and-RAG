@@ -231,3 +231,4 @@ with right_col:
                     st.write(response["answer"])
                 except Exception as e:
                     st.error(f"Error generating response: {e}")
+                    
