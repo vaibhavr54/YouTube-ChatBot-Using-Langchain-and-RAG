@@ -1,44 +1,24 @@
-# --- Core dependencies ---
 streamlit==1.50.0
 python-dotenv==1.2.1
 pytube==15.0.0
 youtube-transcript-api==0.6.2
 yt-dlp==2025.10.14
+
+# LangChain + LLaMA + OpenAI integrations
 langchain==0.3.27
 langchain-community==0.3.31
 langchain-core==0.3.79
 langchain-openai==0.3.35
 langchain-text-splitters==0.3.11
 openai==2.6.1
+
+# Vector and tokenization
 faiss-cpu==1.12.0
 tiktoken==0.12.0
 
-# --- Data and ML stack ---
-numpy>=2.1.0
-pandas==2.3.3
-scikit-learn==1.6.1
-scipy==1.13.1
-matplotlib==3.9.4
-seaborn==0.13.2
-tqdm==4.67.1
+# Data handling
+numpy>=2.1.0,<2.4.0
+pandas==2.2.3
 
-# --- Web and utils ---
-requests==2.32.5
-beautifulsoup4==4.14.2
-rich==14.1.0
-PyYAML==6.0.3
-typing_extensions==4.15.0
-
-# --- LangChain ecosystem support ---
-dataclasses-json==0.6.7
-pydantic==2.12.3
-pydantic-settings==2.11.0
-SQLAlchemy==2.0.44
-
-# --- Visualization and serving ---
-altair==5.5.0
-pydeck==0.9.1
-
-# --- TensorFlow (optional, if used for embeddings or model integration) ---
-tensorflow==2.10.0
-tensorflow-io-gcs-filesystem==0.31.0
+# lightweight sklearn build (no SciPy required)
+scikit-learn==1.4.2
